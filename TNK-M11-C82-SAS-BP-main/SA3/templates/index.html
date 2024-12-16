@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Intorduction to Block</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+			rel="stylesheet" />
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="{{ '/static/css/style.css' }}" />
+	</head>
+
+	<body>
+		<div class="container-fluid d-flex justify-content-center align-items-center p-5 h-100">
+			<div class="form-container">
+				<form action="{{ url_for('home')}}" method="post" id="form1">
+					<div class="form-group">
+						<label for="sender">Sender:</label>
+						<input type="text" id="sender" name="sender" class="form-control" />
+					</div>
+					<div class="form-group">
+						<label for="receiver">Receiver:</label>
+						<input type="text" id="receiver" name="receiver" class="form-control" />
+					</div>
+					<div class="form-group">
+						<label for="amount">Amount:</label>
+						<input type="text" id="amount" name="amount" class="form-control" />
+					</div>
+					<button type="submit" class="btn btn-primary"></button>
+				</form>
+			</div>
+
+			<div id="all-boxes">
+				{% if blockData %}
+				<div class="box-container">
+					<div
+						class="box"
+						onmousedown="startDrag(event)"
+						onmousemove="drag(event)"
+						onmouseup="endDrag(event)"
+						onclick="toggleInfoSection(0)">
+						<div class="box-front">Block 1</div>
+						<div class="box-back"></div>
+						<div class="box-right"></div>
+						<div class="box-left"></div>
+						<div class="box-top"></div>
+						<div class="box-bottom"></div>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+
+			<div class="info-section text-white" id="infoSection">
+				{% if blockData %}
+				<div id="info-title" >
+					<h3 >Block Data</h3>
+				</div>
+				<div id="info-data">
+					<div class="d-flex justify-content-around w-100">
+						<div id="data">
+							<div id="senderData">
+								<img src="../static/assets/sender.png"> Sender: {{ blockData["sender"] }}
+							</div>
+							<div id="receiverData">
+								<img src="../static/assets/receiver.png"> Receiver: {{ blockData["receiver"] }}
+							</div>
+							<div id="amountData">
+								<img src="../static/assets/amount.png"> Amount: {{blockData["amount"]}}
+							</div>
+						</div>
+						<div class="box-container">
+							<div class="box rotate">
+								<div class="box-front">Block</div>
+								<div class="box-back"></div>
+								<div class="box-right"></div>
+								<div class="box-left"></div>
+								<div class="box-top"></div>
+								<div class="box-bottom"></div>
+							</div>
+						</div>
+					</div>
+					<br>
+					<div id="containerLg">
+						<h4>Cipher Data:</h4>
+						<div id="senderData">Sender: {{ cipherData["sender"] }}</div>
+						<div id="receiverData">Receiver: {{ cipherData["receiver"] }}</div>
+						<div id="amountData">Amount: {{cipherData["amount"]}}</div>
+						<br>   
+						<h4>Decipher Data:</h4>
+						<!--Display decipher Data-->
+						<div id="senderData">Sender: {{ deCipherData["sender"] }}</div>
+						<div id="receiverData">Receiver: {{ deCipherData["receiver"] }}</div>
+						<div id="amountData">Amount: {{deCipherData["amount"]}}</div>
+						<div id="receiverData">Receiver: </div>
+						<div id="amountData">Amount: </div>
+					</div>
+				</div>	
+				{% endif %}
+			</div>
+		</div>
+
+		<script>
+			var isDragging = false;
+
+			var xAngle = 0;
+			var yAngle = 0;
+
+			data = [];
+
+			function startDrag(event) {
+				isDragging = true;
+			}
+
+			function drag(event) {
+				if (isDragging) {
+					var dragX =
+						event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+					var dragY =
+						event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+					yAngle += dragX * 0.5;
+					xAngle -= dragY * 0.5;
+					updateRotation();
+				}
+			}
+
+			function endDrag(event) {
+				isDragging = false;
+			}
+
+			function updateRotation() {
+				var box = document.querySelector('.box');
+				box.style.transform =
+					'rotateX(' + xAngle + 'deg) rotateY(' + yAngle + 'deg)';
+			}
+
+			function toggleInfoSection(id) {
+				var infoSection = document.getElementById('infoSection');
+				infoSection.classList.toggle('active');
+			}
+		</script>
+	</body>
+</html>
